@@ -3,6 +3,18 @@ Webex = require('webex');
 const http = require('http');
 const { fonts } = require('../util/fonts');
 
+
+var axios = require("axios"); // Promise based HTTP client for node.js to send HTTP requests
+
+const logger = require("../logger");
+const moment = require("moment");
+
+// Smartsheet module and client initialization
+var client = require("smartsheet");
+const { NotExtended } = require("http-errors");
+var smartsheet = client.createClient({ accessToken: "Bearer M7h8g1OVabn2BR2G5nfAhaT9QkyPOM0KX0924" });
+
+
 let webex;
 
 /**
@@ -95,7 +107,7 @@ function _startListener(resource, event) {
         //need to register a handler for each event type
         if (event === 'all') {
             //each event needs its own handler
-            //if user asked for all cycle through each 
+            //if user asked for all cycle through each
             //event type and register each handler
             for (let event_name of resource.events) {
                 if (event_name === 'all') {
@@ -156,6 +168,7 @@ function _forwardEvent(event_object) {
         fonts.highlight(`${event_object.resource}:${event_object.event}`) +
         ' received'));
 
+/*
     //gathering some details
     const options = {
         hostname: specifications.target,
@@ -179,9 +192,31 @@ function _forwardEvent(event_object) {
     //sending the event
     req.write(event);
     req.end();
-
+*/
     console.log(fonts.info(`event forwarded to ${specifications.target}:${specifications.port}`));
     console.log(fonts.info(event));
+
+	var rowId=event_object.data.text
+	
+	
+	
+    var sheetId = 4551015933470596
+	
+	
+	  var config = {
+		method: "get",
+		url: "https://api.smartsheet.com/2.0/sheets/" + sheetId + "/rows/" + rowId,
+		headers: {
+		  Authorization: "Bearer M7h8g1OVabn2BR2G5nfAhaT9QkyPOM0KX0924",
+		}
+		
+	
+	var fetchRowResp = await axios(config)
+}
+
+		
+	
+
 }
 
 module.exports = {
